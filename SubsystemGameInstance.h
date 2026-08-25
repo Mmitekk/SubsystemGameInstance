@@ -7,6 +7,8 @@
 /**
  * Base GameInstanceSubsystem class with Blueprint support,
  * lifecycle events, and a dynamic type-safe getter node.
+ * 
+ * ⚠️ IMPORTANT: Replace KINGDOMOFISRION_API with your project/module API macro (e.g., YOURPROJECT_API).
  */
 UCLASS(Blueprintable, BlueprintType)
 class KINGDOMOFISRION_API USubsystemGameInstance : public UGameInstanceSubsystem
