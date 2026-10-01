@@ -6,7 +6,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [1.2.0] - 2026-10-01
 ### Added
 - Optional editor-only auto-loader (`Snippets/GameModuleAutoLoad.md`): deferred loading of all Blueprint
-  subsystems at editor startup (`OnPostEngineInit` + `OnFilesLoaded`), so dedicated `Get ...` nodes exist
+  subsystems at editor startup (`GetOnPostEngineInit()` + `OnFilesLoaded`), so dedicated `Get ...` nodes exist
   for every subsystem without opening each Blueprint by hand. Packaged builds unaffected (`WITH_EDITOR`).
 - README (EN / RU): troubleshooting for missing nodes (open + Compile the subsystem Blueprint),
   clarification that the Asset Manager scan registers but does not load classes.

@@ -63,34 +63,34 @@ Replace the file content (rename `YourProject` / `FYourProjectGameModule` to you
 
 void FYourProjectGameModule::StartupModule()
 {
-	Super::StartupModule();
+	FDefaultGameModuleImpl::StartupModule();
 
 #if WITH_EDITOR
 	// Dedicated "Get ..." nodes (UK2Node_GetSubsystem) are generated only for LOADED
 	// subsystem classes, and the Asset Registry is still scanning at module startup,
 	// so loading is deferred until the editor finished initializing.
-	PostEngineInitHandle = FCoreDelegates::OnPostEngineInit.AddRaw(this, &FYourProjectGameModule::LoadBlueprintSubsystems);
+	PostEngineInitHandle = FCoreDelegates::GetOnPostEngineInit().AddRaw(this, &FYourProjectGameModule::LoadBlueprintSubsystems);
 #endif
 }
 
 void FYourProjectGameModule::ShutdownModule()
 {
 #if WITH_EDITOR
-	FCoreDelegates::OnPostEngineInit.Remove(PostEngineInitHandle);
+	FCoreDelegates::GetOnPostEngineInit().Remove(PostEngineInitHandle);
 	if (FAssetRegistryModule* AssetRegistryModule = FModuleManager::GetModulePtr<FAssetRegistryModule>(TEXT("AssetRegistry")))
 	{
 		AssetRegistryModule->Get().OnFilesLoaded().Remove(FilesLoadedHandle);
 	}
 #endif
 
-	Super::ShutdownModule();
+	FDefaultGameModuleImpl::ShutdownModule();
 }
 
 #if WITH_EDITOR
 void FYourProjectGameModule::LoadBlueprintSubsystems()
 {
 	// One-shot: never run twice.
-	FCoreDelegates::OnPostEngineInit.Remove(PostEngineInitHandle);
+	FCoreDelegates::GetOnPostEngineInit().Remove(PostEngineInitHandle);
 
 	IAssetRegistry& AssetRegistry = FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry")).Get();
 
