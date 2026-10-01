@@ -27,7 +27,10 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Subsystem", meta = (DisplayName = "On Deinitialize"))
 	void ReceiveDeinitialize();
 
-	/** Returns the instance of the specified Game Instance Subsystem class, automatically casting the output pin. */
+	/** Returns the instance of the specified Game Instance Subsystem class, automatically casting the output pin.
+	 * Optional / legacy: prefer the dedicated per-subsystem nodes the engine generates automatically
+	 * (e.g. "Get TimeSubsystem" under the "GameInstance Subsystems" category).
+	 * Keep this only for dynamic use cases where the subsystem class is selected at runtime via a variable. */
 	UFUNCTION(BlueprintPure, Category = "Subsystems", meta = (WorldContext = "WorldContextObject", DeterminesOutputType = "SubsystemClass", ToolTip = "Returns the instance of the specified Game Instance Subsystem class."))
 	static USubsystemGameInstance* GetCustomSubsystem(const UObject* WorldContextObject, TSubclassOf<USubsystemGameInstance> SubsystemClass);
 };
