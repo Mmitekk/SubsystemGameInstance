@@ -31,13 +31,15 @@ When adding these files to your project, make sure to replace **`KINGDOMOFISRION
    - Open your subsystem Blueprint once (so its class is loaded), then in any other Blueprint right-click and search for **Get TimeSubsystem** (your subsystem's name).
    - The node lives under the **GameInstance Subsystems** category, has no class pin, and its output pin is already typed as your subsystem — plug variables and functions straight in.
    - Under the hood the node compiles into the engine's `GetGameInstanceSubsystem` call with your class baked in.
+   - **Node missing for a subsystem?** The engine generates nodes only for **loaded** classes. Open that subsystem Blueprint and press **Compile** — the node appears immediately. (This typically hits subsystems you never opened since the last C++ rebuild: recompiling the parent class flags children stale until they recompile.)
 6. **Make the nodes appear reliably (recommended)**:
    - The engine only generates dedicated nodes for **loaded** subsystem classes. To force-load all your subsystems at editor startup, register them once in **Project Settings -> Asset Manager -> Primary Asset Types to Scan**:
      - **Primary Asset Type**: any name, e.g. `SubsystemGameInstance`
      - **Asset Base Class**: `SubsystemGameInstance`
      - **Has Blueprint Classes**: enabled
      - **Directories**: the folder with your subsystems, e.g. `/Game/Blueprints/Subsystems`
-   - After an editor restart, every subsystem Blueprint gets its own getter node automatically — no per-asset setup needed.
+   - After an editor restart the scan picks every subsystem Blueprint up; combined with the auto-loader below, each one gets its getter node with no per-asset setup.
+   - **Optional: auto-load without opening anything.** The Asset Manager scan registers assets but does not *load* their classes. If you want nodes for all subsystems on every editor start with zero manual steps, add the deferred loader from `Snippets/GameModuleAutoLoad.md` to your game module (editor-only, `WITH_EDITOR`; packaged builds unaffected). The Output Log will confirm with `loaded GameInstance Subsystem ...` lines.
 7. **Packaging note**:
    - A subsystem Blueprint is cooked into a packaged build only if something references it. Using its dedicated getter node anywhere creates that reference automatically, so nothing extra is needed. If you never place the node, add the subsystem to **Project Settings -> Packaging -> Additional Assets to Cook** (or reference it via Asset Manager) instead.
 
@@ -73,13 +75,15 @@ When adding these files to your project, make sure to replace **`KINGDOMOFISRION
    - Один раз откройте Блюпринт сабсистемы (чтобы её класс загрузился), затем в любом другом Блюпринте через ПКМ найдите **Get TimeSubsystem** (имя вашей сабсистемы).
    - Нода лежит в категории **GameInstance Subsystems**, пина выбора класса у неё нет, а выходной пин уже нужного типа — цепляйте переменные и функции напрямую.
    - Под капотом нода компилируется в штатный вызов движка `GetGameInstanceSubsystem` с зашитым классом.
+   - **Ноды нет для какой-то сабсистемы?** Движок генерирует ноды только для **загруженных** классов. Откройте Блюпринт этой сабсистемы и нажмите **Compile** — нода появится сразу. (Обычно страдают сабсистемы, которые не открывали после пересборки C++: перекомпиляция родителя помечает детей устаревшими до их рекомпиляции.)
 6. **Чтобы ноды появлялись всегда (рекомендуется)**:
    - Движок генерирует персональные ноды только для **загруженных** классов сабсистем. Чтобы все сабсистемы принудительно грузились при старте редактора, один раз зарегистрируйте их в **Project Settings -> Asset Manager -> Primary Asset Types to Scan**:
      - **Primary Asset Type**: любое имя, например `SubsystemGameInstance`
      - **Asset Base Class**: `SubsystemGameInstance`
      - **Has Blueprint Classes**: включено
      - **Directories**: папка ваших сабсистем, например `/Game/Blueprints/Subsystems`
-   - После перезапуска редактора каждая Блюпринт-сабсистема автоматически получит свою ноду — настраивать каждый ассет отдельно не нужно.
+   - После перезапуска редактора скан подхватит каждую Блюпринт-сабсистему; вместе с автозагрузчиком ниже каждая получит свою ноду без настройки ассетов по одному.
+   - **Опционально: автозагрузка без ручного открывания.** Скан Asset Manager регистрирует ассеты, но не *загружает* их классы. Если хотите ноды для всех сабсистем при каждом старте редактора вообще без ручных шагов, добавьте отложенный загрузчик из `Snippets/GameModuleAutoLoad.md` в свой игровой модуль (только редактор, `WITH_EDITOR`; на упакованные сборки не влияет). Output Log подтвердит строками `loaded GameInstance Subsystem ...`.
 7. **Про упаковку**:
    - Блюпринт сабсистемы попадёт в упакованную сборку, только если на него есть ссылка. Использование её персональной ноды где-либо создаёт такую ссылку автоматически — больше ничего не требуется. Если ноду вы нигде не ставите, добавьте сабсистему в **Project Settings -> Packaging -> Additional Assets to Cook** (или сошлитесь через Asset Manager).
 
